@@ -1,0 +1,18 @@
+{
+  "portable_unit_tests_passed": 132,
+  "snapshot_checks": [
+    {
+      "date": "2026-07-31",
+      "passed": true,
+      "exact_table_comparisons": 6
+    },
+    {
+      "date": "2026-09-25",
+      "passed": true,
+      "exact_table_comparisons": 6
+    }
+  ],
+  "live_sec_download_performed": false,
+  "credential_persistence": "none",
+  "scope": "Hidden SEC identification entry; no scoring methodology changes"
+}

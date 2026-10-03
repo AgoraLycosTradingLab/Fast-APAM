@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fast-apam"
+version = "0.2.0"
+description = "Auditable quarterly and TTM operating-company research model"
+license = {file = "LICENSE"}
+requires-python = ">=3.11"
+dependencies = ["lxml>=4.9", "tzdata>=2024.1"]
+
+[project.scripts]
+fast-apam = "fast_apam.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

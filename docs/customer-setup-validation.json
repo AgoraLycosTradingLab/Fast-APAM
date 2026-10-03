@@ -1,0 +1,18 @@
+{
+  "portable_unit_tests_passed": 140,
+  "snapshot_checks": [
+    {
+      "date": "2026-07-31",
+      "passed": true,
+      "exact_table_comparisons": 6
+    },
+    {
+      "date": "2026-09-25",
+      "passed": true,
+      "exact_table_comparisons": 6
+    }
+  ],
+  "installed_setup_command_verified": true,
+  "customer_ticker_to_results_complete": false,
+  "live_sec_download_performed": false
+}

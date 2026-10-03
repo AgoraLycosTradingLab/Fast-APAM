@@ -1,0 +1,11 @@
+{
+  "replaced_external_fixture_classes": [
+    "FrozenCohortIntegrationTests",
+    "FactorAggregationIntegrationTests",
+    "IndependentReviewIntegrationTests",
+    "PilotNormalizationIntegrationTests",
+    "PersistenceResearchIntegrationTests",
+    "ResearchPilotIntegrationTests"
+  ],
+  "replacement": "fast-apam verify compares both frozen snapshots, including factor and lineage tables."
+}

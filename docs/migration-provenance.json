@@ -1,0 +1,70 @@
+{
+  "operating_company_factor_inputs.py": {
+    "source_sha256": "c8fdeaa07f4d05edecb00384a50ec576abf7f1a9f7c1c545b43f2577eb9956df",
+    "source_snapshot": "2026-09-25"
+  },
+  "operating_company_factor_inputs_v2.py": {
+    "source_sha256": "31e5e441faedc1f39fe6e8d8f4a9241b255dbdeb62153638dfc6fbbc64e0301d",
+    "source_snapshot": "2026-09-25"
+  },
+  "operating_company_normalization.py": {
+    "source_sha256": "15cbad054b636e6a254d5941fcd65d2e8354f1d3d0c5c0a2e0df371ca3d96cd0",
+    "source_snapshot": "2026-09-25"
+  },
+  "operating_company_factor_scores.py": {
+    "source_sha256": "731d14d2a99afd39d545034610c623f1f6fb7b54e543f450cdb0f55bd91d038c",
+    "source_snapshot": "2026-09-25"
+  },
+  "operating_company_persistence_research.py": {
+    "source_sha256": "ef848b856a9ace8463c1b61e37c02d48926710ab39ce8bcc5d1f9772c4821ac8",
+    "source_snapshot": "2026-09-25"
+  },
+  "operating_company_independent_review.py": {
+    "source_sha256": "7e7034212bbfede7ec75b0802413adb01773d7ef7604da937e5192233df8d996",
+    "source_snapshot": "2026-09-25"
+  },
+  "operating_company_research_pilot.py": {
+    "source_sha256": "68dd338e5773d2f957e6a6c4b3043d08a497aeff80f34c7b9c444f69a2135237",
+    "source_snapshot": "2026-09-25"
+  },
+  "research_pilot_vintage.py": {
+    "source_sha256": "3c3653482ad16bea31bc2d643604835bebbea76630830a8805fcfb13147a4204",
+    "source_snapshot": "2026-09-25"
+  },
+  "ttm_yoy_construction.py": {
+    "source_sha256": "dcb07d6420ea7fee0f58d465559dda90548711e891a5ce07c1b2c8899b5a187d",
+    "source_snapshot": "2026-09-25"
+  },
+  "standalone_quarter_construction.py": {
+    "source_sha256": "79c96165d5fca6b41b65b24bfef0e17cd065899555f53af17cc72af6b02c7f33",
+    "source_snapshot": "2026-09-25"
+  },
+  "sec_filing_index.py": {
+    "source_sha256": "182f78940c33fce0eff2eef0b0415b3a6a1d15973578ee239599c729281d8a0d",
+    "source_snapshot": "2026-09-25"
+  },
+  "sec_companyfacts_acquisition.py": {
+    "source_sha256": "ccefebbb9cb96a8d50e168c8cf8e807d291db5482f6d764612a72a5818721e3d",
+    "source_snapshot": "2026-09-25"
+  },
+  "historical_filing_targets.py": {
+    "source_sha256": "1c317b033e97b70a77e3cc3aae6253d6ca6a5dfdfb883a9d2b2e5e5e270215ec",
+    "source_snapshot": "2026-09-25"
+  },
+  "inline_xbrl_context_verification.py": {
+    "source_sha256": "6505cc988f7487731350e721631ff46e38f35e6c27cc54e9ec4b3d43f00194f6",
+    "source_snapshot": "2026-09-25"
+  },
+  "full_batch_context_selection.py": {
+    "source_sha256": "503a0684bf010df4bcc3b8d8dc7a46159646ce85ad2979889fe146445fd0bb05",
+    "source_snapshot": "2026-09-25"
+  },
+  "exception_mapping_continuity.py": {
+    "source_sha256": "af8256039cec198163b41c31fdaee343e5bef9186e7d1e27171c255d400d1e7e",
+    "source_snapshot": "2026-09-25"
+  },
+  "reconcile_companyfacts_inline.py": {
+    "source_sha256": "ac18d600d4198a80c1ec6f2f4bdbbe55abb31da682b32dea0f0ba074aa5b6ca7",
+    "source_snapshot": "2026-09-25"
+  }
+}

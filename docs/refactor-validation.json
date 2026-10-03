@@ -1,0 +1,96 @@
+{
+  "passed": true,
+  "portable_unit_tests": 125,
+  "unit_failures": 0,
+  "unit_errors": 0,
+  "unit_skipped": 0,
+  "code_fingerprint": "20119c58cb709d57d7fa072a349d0a95a196cebb2cfcb0c41219201fd3f2743f",
+  "snapshot_comparisons": [
+    {
+      "model_date": "2026-07-31",
+      "passed": true,
+      "checks": [
+        {
+          "artifact": "MSFT_IT_Historical_Combined_Pilot_Operating_Company_Factor_Input_Detailed_Audit_2026-07-31_R1.csv",
+          "passed": true,
+          "rows": 2738,
+          "differences": []
+        },
+        {
+          "artifact": "MSFT_IT_Historical_Combined_Pilot_Provisional_Factor_Score_Matrix_2026-07-31_R1.csv",
+          "passed": true,
+          "rows": 74,
+          "differences": []
+        },
+        {
+          "artifact": "MSFT_IT_Historical_Combined_Pilot_Research_Pilot_Output_2026-07-31_R1.csv",
+          "passed": true,
+          "rows": 74,
+          "differences": []
+        },
+        {
+          "artifact": "MSFT_IT_Historical_Combined_Pilot_Research_Pilot_Status_Audit_2026-07-31_R1.csv",
+          "passed": true,
+          "rows": 370,
+          "differences": []
+        },
+        {
+          "artifact": "MSFT_IT_Historical_Combined_Pilot_Research_Pilot_Vintage_Parent_Audit_2026-07-31_R1.csv",
+          "passed": true,
+          "rows": 3418,
+          "differences": []
+        },
+        {
+          "artifact": "MSFT_IT_Historical_Combined_Pilot_Source_Lineage_Catalog_2026-07-31_R1.csv",
+          "passed": true,
+          "rows": 5463,
+          "differences": []
+        }
+      ]
+    },
+    {
+      "model_date": "2026-09-25",
+      "passed": true,
+      "checks": [
+        {
+          "artifact": "MSFT_IT_Historical_Combined_Pilot_Operating_Company_Factor_Input_Detailed_Audit_2026-09-25_R1.csv",
+          "passed": true,
+          "rows": 2738,
+          "differences": []
+        },
+        {
+          "artifact": "MSFT_IT_Historical_Combined_Pilot_Provisional_Factor_Score_Matrix_2026-09-25_R1.csv",
+          "passed": true,
+          "rows": 74,
+          "differences": []
+        },
+        {
+          "artifact": "MSFT_IT_Historical_Combined_Pilot_Research_Pilot_Output_2026-09-25_R1.csv",
+          "passed": true,
+          "rows": 74,
+          "differences": []
+        },
+        {
+          "artifact": "MSFT_IT_Historical_Combined_Pilot_Research_Pilot_Status_Audit_2026-09-25_R1.csv",
+          "passed": true,
+          "rows": 370,
+          "differences": []
+        },
+        {
+          "artifact": "MSFT_IT_Historical_Combined_Pilot_Research_Pilot_Vintage_Parent_Audit_2026-09-25_R1.csv",
+          "passed": true,
+          "rows": 3482,
+          "differences": []
+        },
+        {
+          "artifact": "MSFT_IT_Historical_Combined_Pilot_Source_Lineage_Catalog_2026-09-25_R1.csv",
+          "passed": true,
+          "rows": 5657,
+          "differences": []
+        }
+      ]
+    }
+  ],
+  "audit_zip_dependency_hash_checks": 78,
+  "installed_wheel_cli_validated_for_both_dates": true
+}
