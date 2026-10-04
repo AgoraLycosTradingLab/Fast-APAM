@@ -2,23 +2,23 @@
   "timings": [
     {
       "model_date": "2026-07-31",
-      "full_calculation_wall_seconds": 5.4577,
-      "cached_wall_seconds": 0.1734,
+      "full_calculation_wall_seconds": 5.418,
+      "cached_wall_seconds": 0.1654,
       "cached_results_identical": true,
-      "run_id": "887b8662524747a070609a991f7601c6e5de331657a1585c30393c7ea0fed161"
+      "run_id": "2ac7b2de5b775f16b3d0dea70aa9d82922d605406d5e07ae1f522193c4ca6731"
     },
     {
       "model_date": "2026-09-25",
-      "full_calculation_wall_seconds": 5.3173,
-      "cached_wall_seconds": 0.1679,
+      "full_calculation_wall_seconds": 5.2897,
+      "cached_wall_seconds": 0.1669,
       "cached_results_identical": true,
-      "run_id": "ba7b9ececb7f19a040145df5b8235607b032aed2540d5c2ece47b4b28ecb6331"
+      "run_id": "c0a35dd3a9287e0702c767d998594d08c10a11d85ef0d897227d63491915072e"
     }
   ],
-  "sqlite_bytes": 8536064,
+  "sqlite_bytes": 8593408,
   "distinct_stored_artifact_uncompressed_bytes": 139990723,
   "stored_blob_count": 166,
-  "compression_reduction_percent": 93.9,
+  "compression_reduction_percent": 93.86,
   "routine_files_per_run": 3,
   "scope": "Prepared snapshots and derived artifacts only. Raw historical source archives remain separate. Timing includes local execution and storage; these are single-machine measurements, not service guarantees."
 }

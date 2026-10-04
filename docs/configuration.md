@@ -31,7 +31,7 @@ The default store is `data/fast_apam.sqlite`, relative to the working directory.
 | `check-setup --date D --universe FILE` | Offline input syntax validation |
 | `prepare-data --date D --universe FILE --output DIR [--history-start D]` | Acquire SEC candidates; never publish scores |
 | `import-snapshot --date D --source DIR` | Import prepared inputs without publishing results |
-| `run --date D --output DIR [--source DIR] [--verify] [--force]` | Calculate or reuse and publish three files |
+| `run --date D --output DIR [--universe FILE] [--source DIR] [--verify] [--force]` | Calculate the full cohort, optionally select requested stocks, and publish three files |
 | `verify --date D` | Compare calculated tables against imported references |
 | `list` | Show imported dates and fingerprints |
 | `fetch-new-filings --date D --index FILE` | Cache missing eligible documents from a reviewed index |

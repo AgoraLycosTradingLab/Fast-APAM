@@ -46,7 +46,7 @@ If this particular copy already contains an imported September snapshot in its l
 .\.venv\Scripts\python.exe -m fast_apam run --date 2026-09-25 --output outputs/my-september-test --verify
 ```
 
-Choose a new or empty output folder each time. The command uses the imported snapshot, not `universe.csv`.
+Choose a new or empty output folder each time. Add `--universe universe.csv` to select your requested stocks from the imported snapshot. In the launcher, option 3 prompts for your CSV and supports browsing. Scores still use the complete validated peer cohort; missing stocks receive explicit unscored rows. See [your own stock list](own-universe.md).
 
 Someone downloading only the public source will not receive your ignored local database or historical data. They can run the setup check and portable tests, but scoring currently requires a validated prepared snapshot imported using the README instructions. A fully automatic ticker-to-results workflow is still under development.
 

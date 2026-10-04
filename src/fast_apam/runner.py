@@ -87,18 +87,33 @@ def calculate(store,day,force=False):
     return run_id,summary,outputs
 
 
-def publish(store,day,output,force=False,verify=False,*,date_resolution=None):
+def publish(store,day,output,force=False,verify=False,*,date_resolution=None,universe=None):
     if date_resolution is not None and date_resolution['effective_model_date'] != day:
         raise ValueError('Resolved market date does not match the snapshot date')
     destination=Path(output)
     if destination.exists() and any(destination.iterdir()):
         raise ValueError('Output directory must be new or empty; existing results are never overwritten')
+    from .universe import read_universe,select_results
+    request=read_universe(universe) if universe is not None else None
     run_id,summary,outputs=calculate(store,day,force)
     validation=verify_outputs(store,day,outputs) if verify else None
     if validation and not validation['passed']:
         raise ValueError('Reference regression failed: '+json.dumps(validation))
     result_name=PREFIX+'Research_Pilot_Output'+f'_{day}_R1.csv'
     result_rows=rows(outputs[result_name])
+    result_payload=outputs[result_name]
+    if request is not None:
+        result_rows,selection=select_results(result_rows,request,day)
+        result_payload=csv_bytes(result_rows)
+        summary={
+            'run_id':run_id,'model_date':day,'cache_hit':summary.get('cache_hit',False),
+            'status':'COMPLETE_WITH_EXCEPTIONS' if selection['unscored_count'] else 'COMPLETE',
+            'output_scope':'REQUESTED_STOCKS', 'universe_selection':selection,
+            'research_scores_published':selection['scored_count'],
+            'held_tickers':[r['ticker'] for r in result_rows if r['score_published']!='YES'],
+            'production_approved':False,
+            'cohort_summary':summary,
+        }
     held=[r for r in result_rows if r['score_published']!='YES']
     if validation:summary['reference_validation']=validation
     if date_resolution is not None:
@@ -108,7 +123,7 @@ def publish(store,day,output,force=False,verify=False,*,date_resolution=None):
     with tempfile.TemporaryDirectory(prefix='apam_publish_',dir=destination.parent) as temp:
         pending=Path(temp)/'ready'
         pending.mkdir()
-        (pending/'results.csv').write_bytes(outputs[result_name])
+        (pending/'results.csv').write_bytes(result_payload)
         fields=['ticker','company_name','PROVISIONAL_DATA_STATUS','gate_reason','underlying_candidate_hold_reason']
         (pending/'exceptions.csv').write_bytes(csv_bytes([{k:r[k] for k in fields} for r in held],fields))
         summary['output_sha256']={'results.csv':sha((pending/'results.csv').read_bytes()),'exceptions.csv':sha((pending/'exceptions.csv').read_bytes())}

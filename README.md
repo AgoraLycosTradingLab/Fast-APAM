@@ -19,6 +19,7 @@ Fast APAM measures recent operating strength, acceleration, and deterioration. I
 | Retrieve uncached SEC documents from a reviewed filing index | Available |
 | Check a customer ticker CSV offline | Available; format validation only |
 | Acquire SEC filing and financial candidates from tickers | Available with `prepare-data`; not scoring inputs |
+| Export a customer's stock list from a validated snapshot | Available with `run --universe`; full peer cohort retained |
 | Turn arbitrary tickers into a complete scoring run | Under development |
 | Paid-provider API integration | Not implemented |
 | Additional sector modules or historical as-filed backtest validation | Not established by this pilot |
@@ -83,7 +84,7 @@ With your environment's Python selected:
 python -m fast_apam run --date 2026-09-25 --source "PATH_TO_VALIDATED_PREPARED_INPUTS" --output outputs/september-test --verify
 ```
 
-The source path is a placeholder. `--verify` requires frozen reference outputs supplied with the snapshot. For a validated new snapshot without references, omit it; source and scoring gates still apply. The customer ticker file is not yet an input to `run`.
+The source path is a placeholder. `--verify` requires frozen reference outputs supplied with the snapshot. For a validated new snapshot without references, omit it; source and scoring gates still apply. Add `--universe universe.csv` to return your requested stocks while preserving the full normalization cohort. Stocks absent from the snapshot receive explicit unscored rows. See [use your own stock list](docs/own-universe.md).
 
 After import, rerun the snapshot without `--source`. Output folders must be new or empty. Select dates explicitly; never relabel old data to create a new snapshot.
 
@@ -134,7 +135,7 @@ Read the [model guide](docs/model-logic.md) and [governing specifications](docs/
 
 ## Validation
 
-The market-date update passed **178 portable tests** and **12 exact historical table comparisons** across July 31 and September 25, 2026. Those local fixtures are not bundled in a source download. SEC preparation tests use synthetic responses; they do not claim a live provider run. These checks demonstrate regression consistency, not investment performance or production approval. See [the regression report](docs/refactor-validation.json).
+The customer-universe update passed **193 portable tests** and **12 exact historical table comparisons** across July 31 and September 25, 2026. Those local fixtures are not bundled in a source download. SEC preparation tests use synthetic responses; they do not claim a live provider run. These checks demonstrate regression consistency, not investment performance or production approval. See [the regression report](docs/refactor-validation.json).
 
 ```text
 python -m unittest discover -s tests

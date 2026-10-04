@@ -19,6 +19,7 @@ def main():
     run.add_argument('--source',help='Import prepared inputs before calculating')
     run.add_argument('--verify',action='store_true',help='Require equality to the imported frozen reference tables')
     run.add_argument('--force',action='store_true',help='Recalculate and check determinism instead of using cache')
+    run.add_argument('--universe',help='Customer ticker CSV: select result rows without changing the validated peer cohort')
     verify=commands.add_parser('verify');verify.add_argument('--date',required=True)
     audit=commands.add_parser('export-audit');audit.add_argument('--run-id',required=True);audit.add_argument('--output',required=True)
     commands.add_parser('list')
@@ -66,7 +67,7 @@ def main():
         if args.command=='import-snapshot':result=import_source(store,args.date,args.source)
         elif args.command=='run':
             if args.source:import_source(store,args.date,args.source)
-            result=publish(store,args.date,args.output,args.force,args.verify,date_resolution=resolution)
+            result=publish(store,args.date,args.output,args.force,args.verify,date_resolution=resolution,universe=args.universe)
         elif args.command=='verify':
             _,_,outputs=calculate(store,args.date)
             result=verify_outputs(store,args.date,outputs)
@@ -81,6 +82,6 @@ def main():
         else:result=[{'date':d,'fingerprint':f} for d,f in store.db.execute('SELECT date,fingerprint FROM snapshots ORDER BY date')]
         print(json.dumps(result,indent=2))
         return 0
-    except (ValueError,RuntimeError,FileNotFoundError) as error:
+    except (ValueError,RuntimeError,OSError,UnicodeError,csv.Error) as error:
         parser.exit(1,str(error)+'\n')
     finally:store.close()

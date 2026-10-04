@@ -8,6 +8,30 @@ import venv
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def choose_universe():
+    value = input('Ticker CSV path, or press Enter to browse: ').strip().strip('"')
+    if value:
+        return value
+    try:
+        import tkinter as tk
+        from tkinter import filedialog
+    except ImportError:
+        print('File picker unavailable. Paste your CSV path instead.')
+        return input('Ticker CSV path: ').strip().strip('"')
+    root = None
+    try:
+        root = tk.Tk()
+        root.withdraw()
+        return filedialog.askopenfilename(parent=root, title='Select your stock universe CSV',
+            initialdir=str(ROOT), filetypes=[('Ticker CSV', '*.csv')])
+    except tk.TclError:
+        print('File picker unavailable. Paste your CSV path instead.')
+        return input('Ticker CSV path: ').strip().strip('"')
+    finally:
+        if root is not None:
+            root.destroy()
+
+
 def main():
     if sys.version_info < (3, 11):
         print('Fast APAM requires Python 3.11 or newer.')
@@ -36,22 +60,27 @@ def main():
     print('\nFast APAM research pilot\n'
           '1. Check my ticker file (offline)\n'
           '2. Download SEC financial candidates (internet required)\n'
-          '3. Run an already prepared scoring snapshot\n'
+          '3. Run my stock list against a prepared scoring snapshot\n'
           '\nOption 2 does not yet produce scores. Context verification and peer coverage remain required.')
     choice = input('Choose 1, 2 or 3: ').strip()
     if choice not in {'1', '2', '3'}:
         print('No action selected.')
         return 1
     day = input('Model date (YYYY-MM-DD or latest) [latest]: ').strip() or 'latest'
+    universe = choose_universe()
+    if not universe:
+        print('No stock list selected. Cancelled.')
+        return 1
     if choice == '3':
-        source = input('Prepared snapshot folder: ').strip().strip('"')
+        source = input('Prepared snapshot folder [Enter to use the local database]: ').strip().strip('"')
         output = input('New results folder: ').strip().strip('"')
-        if not source or not output:
-            print('Both folders are required.')
+        if not output:
+            print('A new results folder is required.')
             return 1
-        arguments = ['run', '--date', day, '--source', source, '--output', output]
+        arguments = ['run', '--date', day, '--universe', universe, '--output', output]
+        if source:
+            arguments.extend(['--source', source])
     else:
-        universe = input('Ticker CSV path [universe.csv]: ').strip().strip('"') or 'universe.csv'
         arguments = ['check-setup' if choice == '1' else 'prepare-data', '--date', day, '--universe', universe]
         if choice == '2':
             output = input('New preparation folder [data/preparation-' + day + ']: ').strip().strip('"')
