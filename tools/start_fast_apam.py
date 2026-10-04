@@ -22,6 +22,8 @@ def run_operation(python, arguments):
               '\nRun details: ' + str(output / 'run.json'), flush=True)
     elif arguments and arguments[0] == 'prepare-data':
         print('\nPreparation finished. These are financial candidates, not scored model results.', flush=True)
+    elif arguments and arguments[0] == 'verify-contexts':
+        print('\nInline context review finished. These remain candidate facts, not scored model results.', flush=True)
     return result.returncode
 
 
@@ -78,11 +80,18 @@ def main():
           '1. Check my ticker file (offline)\n'
           '2. Download SEC financial candidates (internet required)\n'
           '3. Run my stock list against a prepared scoring snapshot\n'
-          '\nOption 2 does not yet produce scores. Context verification and peer coverage remain required.')
-    choice = input('Choose 1, 2 or 3: ').strip()
-    if choice not in {'1', '2', '3'}:
+          '4. Verify inline contexts in a preparation folder (internet required)\n'
+          '\nOptions 2 and 4 do not yet produce scores. Peer coverage and financial construction remain required.')
+    choice = input('Choose 1, 2, 3 or 4: ').strip()
+    if choice not in {'1', '2', '3', '4'}:
         print('No action selected.')
         return 1
+    if choice == '4':
+        folder = input('Existing preparation folder: ').strip().strip('"')
+        if not folder:
+            print('A preparation folder is required.')
+            return 1
+        return run_operation(python, ['verify-contexts', '--preparation', folder])
     day = input('Model date (YYYY-MM-DD or latest) [latest]: ').strip() or 'latest'
     universe = choose_universe()
     if not universe:
