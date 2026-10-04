@@ -1,6 +1,12 @@
 # Try Fast APAM in VS Code on Windows
 
-This source distribution needs Python 3.11 or newer and the Microsoft Python extension in VS Code. It does not require an installer or administrator access. Git is optional when downloading a ZIP.
+This source distribution needs Python 3.11 or newer. The Microsoft Python extension in VS Code is optional for running terminal commands. It does not require an installer or administrator access. Git is optional when downloading a ZIP.
+
+## Windows launcher
+
+Double-click `Fast APAM.cmd` in the repository. It uses its own directory, creates or reuses `.venv`, and installs the package if needed. Select option 1 to check your ticker file, option 2 to acquire SEC candidates, or option 3 to score an already prepared snapshot. Supply an explicit date. If your CSV is under `examples`, enter `examples/universe.csv` at the prompt.
+
+Option 2 produces audited candidate data, not scores. See [the preparation guide](customer-preparation.md) for remaining work. To repair installation, run `& '.\Fast APAM.cmd' --setup` from PowerShell.
 
 ## Open and install
 
@@ -34,7 +40,7 @@ The three example tickers demonstrate the input format. They do not constitute a
 
 ## Run an existing validated snapshot
 
-Your local development copy already contains imported July and September snapshots. To rerun September into a new output folder:
+If this particular copy already contains an imported September snapshot in its local database, rerun it into a new output folder:
 
 ```powershell
 .\.venv\Scripts\python.exe -m fast_apam run --date 2026-09-25 --output outputs/my-september-test --verify

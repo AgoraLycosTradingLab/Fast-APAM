@@ -39,5 +39,5 @@ def check_setup(universe_path, model_date):
         'dated_universe_eligibility_verified': False,
         'peer_coverage_validated': False,
         'ready_to_score': False,
-        'next_step': 'Resolve dated issuer identities and membership, prepare reviewed financial inputs, and validate the governed peer cohort before scoring. Automatic preparation from this ticker file is not implemented yet.',
+        'next_step': 'Use prepare-data to acquire SEC candidates from this file. Dated identities, membership, inline contexts, financial construction and peer coverage still require verification before scoring; automatic ticker-to-score preparation is incomplete.',
     }

@@ -1,10 +1,10 @@
 {
   "passed": true,
-  "portable_unit_tests": 125,
+  "portable_unit_tests": 157,
   "unit_failures": 0,
   "unit_errors": 0,
   "unit_skipped": 0,
-  "code_fingerprint": "20119c58cb709d57d7fa072a349d0a95a196cebb2cfcb0c41219201fd3f2743f",
+  "code_fingerprint": "c2df90af353149d5b2a7f741ccae0bfd9a5c345b1c38f038e971d4af236603ca",
   "snapshot_comparisons": [
     {
       "model_date": "2026-07-31",
@@ -90,7 +90,5 @@
         }
       ]
     }
-  ],
-  "audit_zip_dependency_hash_checks": 78,
-  "installed_wheel_cli_validated_for_both_dates": true
+  ]
 }

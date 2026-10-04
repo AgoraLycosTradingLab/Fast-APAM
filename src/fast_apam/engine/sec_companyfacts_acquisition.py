@@ -5,7 +5,6 @@ the complete inline-XBRL context/dimension payload, so every retained observatio
 is explicitly flagged for later inline-context verification before construction.
 """
 from __future__ import annotations
-from ..settings import MODEL_DATE, COHORT_SIZE, WAVE_COUNTS
 import argparse
 import csv
 import gzip

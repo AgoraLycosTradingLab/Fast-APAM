@@ -28,6 +28,7 @@ The default store is `data/fast_apam.sqlite`, relative to the working directory.
 | Command | Purpose |
 |---|---|
 | `check-setup --date D --universe FILE` | Offline input syntax validation |
+| `prepare-data --date D --universe FILE --output DIR [--history-start D]` | Acquire SEC candidates; never publish scores |
 | `import-snapshot --date D --source DIR` | Import prepared inputs without publishing results |
 | `run --date D --output DIR [--source DIR] [--verify] [--force]` | Calculate or reuse and publish three files |
 | `verify --date D` | Compare calculated tables against imported references |

@@ -1,6 +1,7 @@
 import argparse
 import csv
 import json
+import sys
 from pathlib import Path
 from .storage import Store
 from .snapshots import import_source
@@ -25,7 +26,20 @@ def main():
     fetch.add_argument('--date',required=True);fetch.add_argument('--index',required=True)
     setup=commands.add_parser('check-setup',help='Check customer ticker-file syntax offline; does not approve a scoring universe')
     setup.add_argument('--date',required=True);setup.add_argument('--universe',required=True)
+    prepare=commands.add_parser('prepare-data',help='Discover SEC issuers and acquire dated filing/fact candidates; does not score')
+    prepare.add_argument('--date',required=True);prepare.add_argument('--universe',required=True)
+    prepare.add_argument('--output',required=True)
+    prepare.add_argument('--history-start',help='Earliest filing date; default January 1 three years before model date, minimum 2023-01-01')
     args=parser.parse_args()
+    if args.command=='prepare-data':
+        from .preparation import prepare
+        try:
+            result=prepare(args.universe,args.date,args.output,args.history_start,
+                           progress=lambda message: print(message,file=sys.stderr,flush=True))
+            print(json.dumps(result,indent=2))
+            return 1 if result['status']=='INCOMPLETE' else 0
+        except (ValueError,OSError,UnicodeError,csv.Error) as error:
+            parser.exit(1,str(error)+'\n')
     if args.command=='check-setup':
         from .customer_setup import check_setup
         try:

@@ -2,38 +2,23 @@
   "timings": [
     {
       "model_date": "2026-07-31",
-      "full_calculation_wall_seconds": 5.4631,
-      "cached_wall_seconds": 0.1912,
+      "full_calculation_wall_seconds": 5.3459,
+      "cached_wall_seconds": 0.1602,
       "cached_results_identical": true,
-      "run_id": "ae2b688ea8f483c9e9377b240c9b699b5f17b22bf14e26d05d291938dbb7480c"
+      "run_id": "a988d544c4eb5aa63dc2a87b354076e0874bd788d8c23865da4a8a64ff917055"
     },
     {
       "model_date": "2026-09-25",
-      "full_calculation_wall_seconds": 7.2779,
-      "cached_wall_seconds": 0.2434,
+      "full_calculation_wall_seconds": 5.3161,
+      "cached_wall_seconds": 0.1807,
       "cached_results_identical": true,
-      "run_id": "235583fc31563ee5621a5d703ed15ac57d7ab4b5b285eb8ca8de9a6f898cc411"
+      "run_id": "716c2384ea23be2a478172c0c028d807fac568865640de00e715c05b96642a0b"
     }
   ],
-  "sqlite_bytes": 8298496,
-  "distinct_stored_artifact_uncompressed_bytes": 139965154,
-  "stored_blob_count": 162,
-  "compression_reduction_percent": 94.07,
+  "sqlite_bytes": 8486912,
+  "distinct_stored_artifact_uncompressed_bytes": 139990723,
+  "stored_blob_count": 166,
+  "compression_reduction_percent": 93.94,
   "routine_files_per_run": 3,
-  "scope": "Prepared snapshots and derived artifacts only. Raw historical source archives remain separate. Timing includes local execution and storage; these are single-machine measurements, not service guarantees.",
-  "legacy_comparison": [
-    {
-      "model_date": "2026-07-31",
-      "legacy_six_stage_wall_seconds": 4.6147,
-      "legacy_generated_loose_files": 53,
-      "legacy_generated_bytes": 47315413
-    },
-    {
-      "model_date": "2026-09-25",
-      "legacy_six_stage_wall_seconds": 4.7718,
-      "legacy_generated_loose_files": 47,
-      "legacy_generated_bytes": 47801280
-    }
-  ],
-  "interpretation": "First calculations are of similar order; the measured speed benefit is reuse of identical inputs/code. No network download time is included. Raw evidence archives are not replaced by the compact scoring store."
+  "scope": "Prepared snapshots and derived artifacts only. Raw historical source archives remain separate. Timing includes local execution and storage; these are single-machine measurements, not service guarantees."
 }

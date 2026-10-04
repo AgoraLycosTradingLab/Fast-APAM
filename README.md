@@ -18,6 +18,7 @@ Fast APAM measures recent operating strength, acceleration, and deterioration. I
 | Export detailed evidence and audits as a ZIP | Available |
 | Retrieve uncached SEC documents from a reviewed filing index | Available |
 | Check a customer ticker CSV offline | Available; format validation only |
+| Acquire SEC filing and financial candidates from tickers | Available with `prepare-data`; not scoring inputs |
 | Turn arbitrary tickers into a complete scoring run | Under development |
 | Paid-provider API integration | Not implemented |
 | Additional sector modules or historical as-filed backtest validation | Not established by this pilot |
@@ -44,6 +45,10 @@ git clone https://github.com/AgoraLycosTradingLab/Fast-APAM.git
 
 Open the folder containing `pyproject.toml` in VS Code.
 
+**Windows shortcut:** double-click **Fast APAM.cmd** in that folder. It creates or reuses this copy's `.venv`, installs the package when needed, and offers three choices: check a ticker file, acquire SEC candidates, or score an already prepared snapshot. No environment activation is needed. First-time installation requires internet access. Enter your intended model date and CSV path. The launcher never replaces your ticker file.
+
+This removes the manual setup commands. Automatic ticker-to-score preparation is still unfinished.
+
 In **Windows PowerShell**, run these commands one at a time:
 
 ```powershell
@@ -59,6 +64,14 @@ Copy `examples/universe.csv` to a root-level `universe.csv` and edit that copy f
 On macOS/Linux, create the environment with `python3 -m venv .venv` and use `.venv/bin/python` instead of the Windows executable. See the [VS Code walkthrough](docs/vscode-quickstart.md).
 
 ## Run a prepared snapshot
+
+To acquire SEC data from customer tickers first, use launcher option 2 or:
+
+```powershell
+.\.venv\Scripts\python.exe -m fast_apam prepare-data --date 2026-09-25 --universe universe.csv --output data/preparation-2026-09-25
+```
+
+Use your intended date and a new or empty output folder. The command prompts privately for your SEC organization/contact identifier. It saves issuer matches, eligible and excluded filing metadata, accession-linked financial candidates, raw JSON, source hashes and exceptions. **These are candidates, not scores.** Dated identities, peer evidence, inline contexts and financial construction still need verification and integration. This folder cannot yet be passed to `run --source`. See [customer preparation](docs/customer-preparation.md).
 
 A source-only download does **not** include the developer's local database or historical financial datasets. Scoring currently requires the [prepared input contract](docs/configuration.md#prepared-snapshot-inputs).
 
@@ -119,7 +132,7 @@ Read the [model guide](docs/model-logic.md) and [governing specifications](docs/
 
 ## Validation
 
-The customer-setup milestone passed **140 portable tests**. Local reference validation matched six tables for each of July 31 and September 25, 2026: **12 exact comparisons**, including results and source lineage. Those local fixtures are not bundled in a source download. These checks demonstrate regression consistency, not investment performance or production approval.
+The customer-preparation milestone passed **157 portable tests** and **12 exact historical table comparisons** across July 31 and September 25, 2026. Those local fixtures are not bundled in a source download. SEC preparation tests use synthetic responses; they do not claim a live provider run. These checks demonstrate regression consistency, not investment performance or production approval. See [the regression report](docs/refactor-validation.json).
 
 ```text
 python -m unittest discover -s tests

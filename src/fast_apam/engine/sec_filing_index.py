@@ -4,7 +4,6 @@ This module deliberately stops at filing metadata. It does not acquire XBRL fact
 construct quarters, normalize peers, or calculate scores.
 """
 from __future__ import annotations
-from ..settings import MODEL_DATE, COHORT_SIZE, WAVE_COUNTS
 import argparse
 import csv
 import gzip

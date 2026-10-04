@@ -43,4 +43,4 @@ Source releases should contain code, tests, governing documentation, and synthet
 
 ## Next implementation stage
 
-Implement dated issuer resolution and the requested-company versus peer-cohort contract against local fixtures first. Establish which dated membership/classification evidence the customer can supply or retrieve under usable rights before enabling unrestricted new-universe scoring. Then connect automatic filing preparation to the preserved calculation engine.
+The October 3 acquisition milestone adds the Windows launcher and `prepare-data`: current SEC issuer discovery, recent/archived filing metadata, cutoff-filtered financial candidates and source evidence. See [customer preparation](customer-preparation.md). These additions do not close stages 2–5. Next, complete dated issuer and peer evidence handling, inline-context verification and construction, then connect the preserved scoring engine. FAPAM-004 permits personal files operationally while retaining dated eligibility requirements.
