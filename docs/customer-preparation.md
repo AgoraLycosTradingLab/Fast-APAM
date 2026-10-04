@@ -12,6 +12,8 @@ python -m fast_apam prepare-data --date 2026-09-25 --universe universe.csv --out
 
 The date is a historical example. Future model dates are rejected. The default filing history begins January 1 three years before the model year. `--history-start YYYY-MM-DD` overrides this; dates before 2023 are outside the existing pilot calendar support. A shorter range does not waive financial-history requirements. Review extraordinary exchange closures before extending historical calendar coverage.
 
+You may also use `--date latest`. Weekend and holiday dates, or today before its close, roll back to the previous completed market session. Both dates are retained in `preparation.json`; candidate rows use the effective date. See [market dates and calendar maintenance](market-dates.md).
+
 | File | Meaning |
 |---|---|
 | `issuer_candidates.csv` | Exact current SEC symbol-to-CIK matches; not dated identity approval |

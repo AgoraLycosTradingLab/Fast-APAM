@@ -4,7 +4,7 @@ This source distribution needs Python 3.11 or newer. The Microsoft Python extens
 
 ## Windows launcher
 
-Double-click `Fast APAM.cmd` in the repository. It uses its own directory, creates or reuses `.venv`, and installs the package if needed. Select option 1 to check your ticker file, option 2 to acquire SEC candidates, or option 3 to score an already prepared snapshot. Supply an explicit date. If your CSV is under `examples`, enter `examples/universe.csv` at the prompt.
+Double-click `Fast APAM.cmd` in the repository. It uses its own directory, creates or reuses `.venv`, and installs the package if needed. Select option 1 to check your ticker file, option 2 to acquire SEC candidates, or option 3 to score an already prepared snapshot. Supply a date or `latest`; a blank date prompt selects `latest`. Weekends, holidays and today's unfinished session roll back automatically, with both dates reported. See [market dates](market-dates.md). If your CSV is under `examples`, enter `examples/universe.csv` at the prompt.
 
 Option 2 produces audited candidate data, not scores. See [the preparation guide](customer-preparation.md) for remaining work. To repair installation, run `& '.\Fast APAM.cmd' --setup` from PowerShell.
 

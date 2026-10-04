@@ -143,6 +143,14 @@ class PreparationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'new or empty'):
             self.run_prepare()
 
+    def test_weekend_cutoff_flows_into_prepared_inputs_and_audit(self):
+        result = prepare(self.universe, '2026-08-02', self.output, transport=self.transport)
+        self.assertEqual(result['model_date'], '2026-07-31')
+        self.assertEqual(result['date_resolution']['requested_date'], '2026-08-02')
+        self.assertEqual(result['candidate_fact_count'], 1)
+        self.assertIn('2026-07-31', (self.output / 'candidate_facts.csv').read_text())
+        self.assertNotIn('2026-08-02', (self.output / 'candidate_facts.csv').read_text())
+
     def test_future_model_date_rejected_before_network(self):
         with self.assertRaisesRegex(ValueError, 'future'):
             prepare(self.universe, '2099-01-01', self.output, transport=self.transport)

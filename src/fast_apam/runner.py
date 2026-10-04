@@ -87,7 +87,9 @@ def calculate(store,day,force=False):
     return run_id,summary,outputs
 
 
-def publish(store,day,output,force=False,verify=False):
+def publish(store,day,output,force=False,verify=False,*,date_resolution=None):
+    if date_resolution is not None and date_resolution['effective_model_date'] != day:
+        raise ValueError('Resolved market date does not match the snapshot date')
     destination=Path(output)
     if destination.exists() and any(destination.iterdir()):
         raise ValueError('Output directory must be new or empty; existing results are never overwritten')
@@ -99,6 +101,8 @@ def publish(store,day,output,force=False,verify=False):
     result_rows=rows(outputs[result_name])
     held=[r for r in result_rows if r['score_published']!='YES']
     if validation:summary['reference_validation']=validation
+    if date_resolution is not None:
+        summary['date_resolution']=date_resolution
     # A completed directory is promoted atomically after all outputs are written.
     destination.parent.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='apam_publish_',dir=destination.parent) as temp:

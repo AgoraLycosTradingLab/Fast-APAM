@@ -138,6 +138,10 @@ def _filing_row(issuer, submission, filing, day, observed):
 def prepare(universe_path, model_date, output, history_start=None,
             transport=download, progress=None):
     setup = check_setup(universe_path, model_date)
+    model_date = setup['model_date']
+    if progress:
+        progress('Requested date: ' + setup['date_resolution']['requested_date'] +
+                 '; effective model date: ' + model_date)
     day = date.fromisoformat(model_date)
     if day > datetime.now(EASTERN).date():
         raise ValueError('Preparation cannot use a future model date')
@@ -166,6 +170,7 @@ def prepare(universe_path, model_date, output, history_start=None,
         _write_csv(folder / 'preparation_exceptions.csv', exceptions, EXCEPTION_FIELDS)
         report = {
             'status': status, 'model_date': model_date, 'history_start': start.isoformat(),
+            'date_resolution': setup['date_resolution'],
             'requested_ticker_count': len(setup['requested_tickers']),
             'issuer_candidate_count': len(issuers), 'filing_count': len(index),
             'eligible_filing_count': sum(r['eligible_on_model_date'] == 'Y' for r in index),

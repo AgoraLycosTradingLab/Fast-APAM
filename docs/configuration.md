@@ -1,6 +1,6 @@
 # Configuration and commands
 
-Use your virtual environment's Python for every command. `python -m fast_apam` and the installed `fast-apam` command expose the same interface. The model date is explicit, never silently inferred from the computer clock.
+Use your virtual environment's Python for every command. `python -m fast_apam` and the installed `fast-apam` command expose the same interface. Customer commands accept an explicit date or `latest`. Weekends, exchange holidays and today's unfinished session fall back to the preceding completed session; requested and effective dates are recorded. See [market dates](market-dates.md).
 
 ## Ticker input
 
@@ -27,6 +27,7 @@ The default store is `data/fast_apam.sqlite`, relative to the working directory.
 
 | Command | Purpose |
 |---|---|
+| `resolve-date --date D` | Preview date fallback; D can be `latest` |
 | `check-setup --date D --universe FILE` | Offline input syntax validation |
 | `prepare-data --date D --universe FILE --output DIR [--history-start D]` | Acquire SEC candidates; never publish scores |
 | `import-snapshot --date D --source DIR` | Import prepared inputs without publishing results |
@@ -42,4 +43,4 @@ Replace D, FILE, DIR and ID with actual values. `--verify` needs frozen referenc
 
 Only implemented SEC downloads need `APAM_SEC_USER_AGENT`, an organization/contact identifier rather than a paid API key. Interactive entry is hidden, command-scoped, and not saved by the application. Unattended jobs must supply it through their environment. The application does not load `.env` automatically.
 
-No customer JSON configuration file, vendor-key argument, automatic “today” run, or ticker-to-scoring command has been implemented. See [data sources](data-sources.md).
+No customer JSON configuration file, vendor-key argument or automatic ticker-to-scoring command has been implemented. `run`, `prepare-data`, and `check-setup` support `--date latest`; evidence-management commands retain exact dates. See [data sources](data-sources.md).

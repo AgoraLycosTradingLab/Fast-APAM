@@ -49,6 +49,8 @@ Open the folder containing `pyproject.toml` in VS Code.
 
 This removes the manual setup commands. Automatic ticker-to-score preparation is still unfinished.
 
+**Date selection:** enter `latest` (or leave the launcher's date prompt blank) for the latest completed market session. An explicit weekend, market holiday, or today's date before the close falls back automatically. Requested and effective dates are displayed and recorded. Preview with `python -m fast_apam resolve-date --date latest`. See [market dates and calendar coverage](docs/market-dates.md).
+
 In **Windows PowerShell**, run these commands one at a time:
 
 ```powershell
@@ -132,7 +134,7 @@ Read the [model guide](docs/model-logic.md) and [governing specifications](docs/
 
 ## Validation
 
-The customer-preparation milestone passed **157 portable tests** and **12 exact historical table comparisons** across July 31 and September 25, 2026. Those local fixtures are not bundled in a source download. SEC preparation tests use synthetic responses; they do not claim a live provider run. These checks demonstrate regression consistency, not investment performance or production approval. See [the regression report](docs/refactor-validation.json).
+The market-date update passed **178 portable tests** and **12 exact historical table comparisons** across July 31 and September 25, 2026. Those local fixtures are not bundled in a source download. SEC preparation tests use synthetic responses; they do not claim a live provider run. These checks demonstrate regression consistency, not investment performance or production approval. See [the regression report](docs/refactor-validation.json).
 
 ```text
 python -m unittest discover -s tests

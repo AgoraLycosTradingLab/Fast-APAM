@@ -42,7 +42,7 @@ def main():
     if choice not in {'1', '2', '3'}:
         print('No action selected.')
         return 1
-    day = input('Model date (YYYY-MM-DD): ').strip()
+    day = input('Model date (YYYY-MM-DD or latest) [latest]: ').strip() or 'latest'
     if choice == '3':
         source = input('Prepared snapshot folder: ').strip().strip('"')
         output = input('New results folder: ').strip().strip('"')

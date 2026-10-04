@@ -30,7 +30,21 @@ def main():
     prepare.add_argument('--date',required=True);prepare.add_argument('--universe',required=True)
     prepare.add_argument('--output',required=True)
     prepare.add_argument('--history-start',help='Earliest filing date; default January 1 three years before model date, minimum 2023-01-01')
+    resolve=commands.add_parser('resolve-date',help='Show the previous completed NYSE session for a date or latest')
+    resolve.add_argument('--date',default='latest')
     args=parser.parse_args()
+    resolution=None
+    if args.command in {'run','resolve-date'}:
+        from .market_date import resolve_model_date
+        try:
+            resolution=resolve_model_date(args.date)
+        except ValueError as error:
+            parser.exit(1,str(error)+'\n')
+        if args.command=='resolve-date':
+            print(json.dumps(resolution,indent=2))
+            return 0
+        args.date=resolution['effective_model_date']
+        print('Requested date: '+resolution['requested_date']+'; effective model date: '+args.date,file=sys.stderr)
     if args.command=='prepare-data':
         from .preparation import prepare
         try:
@@ -52,7 +66,7 @@ def main():
         if args.command=='import-snapshot':result=import_source(store,args.date,args.source)
         elif args.command=='run':
             if args.source:import_source(store,args.date,args.source)
-            result=publish(store,args.date,args.output,args.force,args.verify)
+            result=publish(store,args.date,args.output,args.force,args.verify,date_resolution=resolution)
         elif args.command=='verify':
             _,_,outputs=calculate(store,args.date)
             result=verify_outputs(store,args.date,outputs)

@@ -3,12 +3,12 @@ import csv
 import re
 from datetime import date
 from pathlib import Path
+from .market_date import resolve_model_date
 
 
 def check_setup(universe_path, model_date):
-    if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', model_date):
-        raise ValueError('Model date must use YYYY-MM-DD.')
-    date.fromisoformat(model_date)
+    resolution = resolve_model_date(model_date)
+    model_date = resolution['effective_model_date']
     tickers = []
     seen = set()
     with Path(universe_path).open(encoding='utf-8-sig', newline='') as source:
@@ -30,6 +30,7 @@ def check_setup(universe_path, model_date):
     return {
         'setup_status': 'INPUT_FORMAT_VALID',
         'model_date': model_date,
+        'date_resolution': resolution,
         'requested_ticker_count': len(tickers),
         'requested_tickers': tickers,
         'data_source': 'SEC',
