@@ -13,3 +13,6 @@ dist/
 *.sqlite
 *.sqlite-*
 /universe.csv
+# Keep personal ticker files placed beside the tracked example out of commits.
+/examples/*.csv
+
