@@ -8,6 +8,23 @@ import venv
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def run_operation(python, arguments):
+    result = subprocess.run([str(python), '-m', 'fast_apam', *arguments])
+    if result.returncode:
+        print('\nFast APAM did not complete. Read the error above.', flush=True)
+        if arguments and arguments[0] == 'run':
+            print('No new model results were published by this attempt.\n'
+                  'Correct the reported error and run again.', flush=True)
+    elif arguments and arguments[0] == 'run' and '--output' in arguments:
+        output = Path(arguments[arguments.index('--output') + 1]).resolve()
+        print('\nFast APAM run finished.\nResults: ' + str(output / 'results.csv') +
+              '\nUnscored stocks and reasons: ' + str(output / 'exceptions.csv') +
+              '\nRun details: ' + str(output / 'run.json'), flush=True)
+    elif arguments and arguments[0] == 'prepare-data':
+        print('\nPreparation finished. These are financial candidates, not scored model results.', flush=True)
+    return result.returncode
+
+
 def choose_universe():
     value = input('Ticker CSV path, or press Enter to browse: ').strip().strip('"')
     if value:
@@ -56,7 +73,7 @@ def main():
         if sys.argv[1:] == ['--setup']:
             print('Setup complete. Open Fast APAM.cmd to continue.')
             return 0
-        return subprocess.run([str(python), '-m', 'fast_apam', *sys.argv[1:]]).returncode
+        return run_operation(python, sys.argv[1:])
     print('\nFast APAM research pilot\n'
           '1. Check my ticker file (offline)\n'
           '2. Download SEC financial candidates (internet required)\n'
@@ -85,7 +102,7 @@ def main():
         if choice == '2':
             output = input('New preparation folder [data/preparation-' + day + ']: ').strip().strip('"')
             arguments.extend(['--output', output or 'data/preparation-' + day])
-    return subprocess.run([str(python), '-m', 'fast_apam', *arguments]).returncode
+    return run_operation(python, arguments)
 
 
 if __name__ == '__main__':

@@ -1,10 +1,10 @@
 {
   "passed": true,
-  "portable_unit_tests": 193,
+  "portable_unit_tests": 197,
   "unit_failures": 0,
   "unit_errors": 0,
   "unit_skipped": 0,
-  "code_fingerprint": "5a5cdd9fe7f01f0224df1164fa02134ae6c85ea218addeb0afda6e8ef76dc5ec",
+  "code_fingerprint": "53ed19960a5ec3729991793eb5f7d703acffef1a8ebafec2dfa12a841e3b001a",
   "snapshot_comparisons": [
     {
       "model_date": "2026-07-31",

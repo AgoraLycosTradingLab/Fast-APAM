@@ -70,6 +70,14 @@ class UniverseTests(unittest.TestCase):
         self.assertEqual(request['input_sha256'],hashlib.sha256(before).hexdigest())
         self.assertEqual(self.path.read_bytes(),before)
 
+    def test_header_capitalization_and_spaces_are_accepted(self):
+        for header in ['Ticker','TICKER',' ticker ']:
+            with self.subTest(header=header):
+                self.path.write_text(header+'\nAAPL\nMSFT\n')
+                before=self.path.read_bytes()
+                self.assertEqual(read_universe(self.path)['requested_tickers'],['AAPL','MSFT'])
+                self.assertEqual(self.path.read_bytes(),before)
+
     def test_duplicate_cohort_rows_fail_closed(self):
         with self.assertRaisesRegex(ValueError,'duplicate'):
             select_results(self.cohort+self.cohort,read_universe(self.path),'2026-09-25')
@@ -140,3 +148,27 @@ class LauncherUniverseTests(unittest.TestCase):
     def test_no_tkinter_cancel_returns_empty(self):
         with patch('builtins.input',side_effect=['','']),patch.dict('sys.modules',{'tkinter':None}),contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(self.launcher.choose_universe(),'')
+
+    def test_launcher_success_displays_results_location(self):
+        output = io.StringIO()
+        with patch.object(self.launcher.subprocess,'run') as run, contextlib.redirect_stdout(output):
+            run.return_value.returncode = 0
+            code = self.launcher.run_operation('python',['run','--output','outputs/my results'])
+        self.assertEqual(code,0)
+        self.assertIn(str(Path('outputs/my results/results.csv').resolve()),output.getvalue())
+
+    def test_launcher_failure_is_visible_and_preserves_exit_code(self):
+        output = io.StringIO()
+        with patch.object(self.launcher.subprocess,'run') as run, contextlib.redirect_stdout(output):
+            run.return_value.returncode = 7
+            code = self.launcher.run_operation('python',['run','--output','unused'])
+        self.assertEqual(code,7)
+        self.assertIn('did not complete',output.getvalue())
+        self.assertNotIn('run finished',output.getvalue())
+
+    def test_preparation_success_does_not_claim_model_results(self):
+        output = io.StringIO()
+        with patch.object(self.launcher.subprocess,'run') as run, contextlib.redirect_stdout(output):
+            run.return_value.returncode = 0
+            self.launcher.run_operation('python',['prepare-data'])
+        self.assertIn('not scored model results',output.getvalue())

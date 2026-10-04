@@ -2,11 +2,12 @@
 
 | Problem | Check or action |
 |---|---|
+| Double-clicked launcher disappears | Update `Fast APAM.cmd`; double-click sessions now remain open until you type `exit`. Successful runs print the full results path; failures remain visible. |
 | `py` is not found | Locate/install Python 3.11+, reopen the terminal, or use `python -m venv .venv` if that is your installed command |
 | `No module named fast_apam` | Install from the folder containing `pyproject.toml`; use the same virtual environment for installation and execution |
 | PowerShell blocks environment activation | Activation is unnecessary; use `.\.venv\Scripts\python.exe` directly |
 | Setup says `ready_to_score: false` | Expected: the setup command validates ticker-file format only |
-| Ticker CSV rejected | Keep exactly one `ticker` column, remove duplicates and extra columns, and fix the indicated row |
+| Ticker CSV rejected | Keep one column; `ticker`, `Ticker` and `TICKER` headers are accepted. Remove duplicates and extra columns, and fix the indicated row. |
 | Snapshot not found | Source downloads exclude the local database; import validated prepared inputs first |
 | Required prepared input missing | Consult the input contract; a ticker list or raw filing directory is not a prepared snapshot |
 | Date mismatch or look-ahead error | Correct the actual dated inputs/availability; do not bypass checks or relabel old data |

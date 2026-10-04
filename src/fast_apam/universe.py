@@ -9,13 +9,13 @@ from pathlib import Path
 def read_universe(path):
     payload = Path(path).read_bytes()
     reader = csv.DictReader(io.StringIO(payload.decode('utf-8-sig'), newline=''), strict=True)
-    if reader.fieldnames != ['ticker']:
+    if not reader.fieldnames or len(reader.fieldnames) != 1 or reader.fieldnames[0].strip().casefold() != 'ticker':
         raise ValueError('Universe CSV must contain exactly one column named ticker. Do not place credentials in this file.')
     tickers, seen = [], set()
     for line, row in enumerate(reader, start=2):
         if None in row:
             raise ValueError(f'Universe row {line} has extra columns.')
-        symbol = (row.get('ticker') or '').strip().upper()
+        symbol = (row.get(reader.fieldnames[0]) or '').strip().upper()
         if not re.fullmatch(r'[A-Z][A-Z0-9]*(?:[.-][A-Z0-9]+)*', symbol) or len(symbol) > 15:
             raise ValueError(f'Universe row {line} needs a ticker using letters, digits, dots or hyphens (maximum 15 characters).')
         if symbol in seen:

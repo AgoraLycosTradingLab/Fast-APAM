@@ -135,7 +135,7 @@ Read the [model guide](docs/model-logic.md) and [governing specifications](docs/
 
 ## Validation
 
-The customer-universe update passed **193 portable tests** and **12 exact historical table comparisons** across July 31 and September 25, 2026. Those local fixtures are not bundled in a source download. SEC preparation tests use synthetic responses; they do not claim a live provider run. These checks demonstrate regression consistency, not investment performance or production approval. See [the regression report](docs/refactor-validation.json).
+The launcher and CSV usability update passed **197 portable tests** and **12 exact historical table comparisons** across July 31 and September 25, 2026. Those local fixtures are not bundled in a source download. SEC preparation tests use synthetic responses; they do not claim a live provider run. These checks demonstrate regression consistency, not investment performance or production approval. See [the regression report](docs/refactor-validation.json).
 
 ```text
 python -m unittest discover -s tests

@@ -11,6 +11,8 @@ NVDA
 
 Save it at the repository root, where this filename is ignored by Git, or outside the repository. Do not put credentials in the file. Use one symbol per row; surrounding spaces and lowercase letters are normalized. Duplicate symbols, extra columns, invalid symbols and empty lists are rejected with a row-specific error where applicable. Share-class spellings are not guessed or silently merged.
 
+The header accepts `ticker`, `Ticker`, or `TICKER`, including surrounding spaces. Your file is read without being rewritten. Double-click launcher sessions stay open after success, failure or cancellation; type `exit` to close the console. A successful scoring run prints the full paths to its results, exceptions and run report.
+
 ## Windows menu
 
 Open `Fast APAM.cmd`. Choose:
