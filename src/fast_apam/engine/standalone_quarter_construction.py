@@ -1,6 +1,5 @@
 """Construct auditable standalone fiscal quarters from canonical parent periods."""
 from __future__ import annotations
-from ..settings import MODEL_DATE, COHORT_SIZE, WAVE_COUNTS
 import argparse
 import csv
 import json

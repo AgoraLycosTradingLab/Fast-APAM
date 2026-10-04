@@ -23,7 +23,7 @@ def run_operation(python, arguments):
     elif arguments and arguments[0] == 'prepare-data':
         print('\nPreparation finished. These are financial candidates, not scored model results.', flush=True)
     elif arguments and arguments[0] == 'verify-contexts':
-        print('\nInline context review finished. These remain candidate facts, not scored model results.', flush=True)
+        print('\nInline, quarter and TTM preparation finished. These remain candidate signals, not scored model results.', flush=True)
     return result.returncode
 
 
@@ -80,7 +80,7 @@ def main():
           '1. Check my ticker file (offline)\n'
           '2. Download SEC financial candidates (internet required)\n'
           '3. Run my stock list against a prepared scoring snapshot\n'
-          '4. Verify inline contexts in a preparation folder (internet required)\n'
+          '4. Verify inline contexts and construct candidate signals (internet required)\n'
           '\nOptions 2 and 4 do not yet produce scores. Peer coverage and financial construction remain required.')
     choice = input('Choose 1, 2, 3 or 4: ').strip()
     if choice not in {'1', '2', '3', '4'}:

@@ -19,7 +19,7 @@ Fast APAM measures recent operating strength, acceleration, and deterioration. I
 | Retrieve uncached SEC documents from a reviewed filing index | Available |
 | Check a customer ticker CSV offline | Available; format validation only |
 | Acquire SEC filing and financial candidates from tickers | Available with `prepare-data`; not scoring inputs |
-| Select historical filings and verify inline contexts | Available with `prepare-data` and `verify-contexts`; still requires reviewed issuer and peer evidence |
+| Select historical filings and construct candidate quarter/TTM signals | Available with `prepare-data` and `verify-contexts`; still requires reviewed issuer and peer evidence |
 | Export a customer's stock list from a validated snapshot | Available with `run --universe`; full peer cohort retained |
 | Turn arbitrary tickers into a complete scoring run | Under development |
 | Paid-provider API integration | Not implemented |
@@ -47,7 +47,7 @@ git clone https://github.com/AgoraLycosTradingLab/Fast-APAM.git
 
 Open the folder containing `pyproject.toml` in VS Code.
 
-**Windows shortcut:** double-click **Fast APAM.cmd** in that folder. It creates or reuses this copy's `.venv`, installs the package when needed, and offers three choices: check a ticker file, acquire SEC candidates, or score an already prepared snapshot. No environment activation is needed. First-time installation requires internet access. Enter your intended model date and CSV path. The launcher never replaces your ticker file.
+**Windows shortcut:** double-click **Fast APAM.cmd** in that folder. It creates or reuses this copy's `.venv`, installs the package when needed, and offers four choices: check a ticker file, acquire SEC candidates, score an already prepared snapshot, or verify inline contexts and construct candidate signals. No environment activation is needed. First-time installation requires internet access. Enter your intended model date and CSV path. The launcher never replaces your ticker file.
 
 This removes the manual setup commands. Automatic ticker-to-score preparation is still unfinished.
 
@@ -75,7 +75,7 @@ To acquire SEC data from customer tickers first, use launcher option 2 or:
 .\.venv\Scripts\python.exe -m fast_apam prepare-data --date 2026-09-25 --universe universe.csv --output data/preparation-2026-09-25
 ```
 
-Use your intended date and a new or empty output folder. The command prompts privately for your SEC organization/contact identifier. It saves issuer matches, eligible and excluded filing metadata, accession-linked financial candidates, selected filing review targets, raw JSON, source hashes and exceptions. To download the selected filings and audit their inline contexts, run `python -m fast_apam verify-contexts --preparation data/preparation-2026-09-25`. **These are candidates, not scores.** Dated identities, peer evidence, canonical fact selection and financial construction still need verification and integration. This folder cannot yet be passed to `run --source`. See [customer preparation](docs/customer-preparation.md).
+Use your intended date and a new or empty output folder. The command prompts privately for your SEC organization/contact identifier. It saves issuer matches, eligible and excluded filing metadata, accession-linked financial candidates, selected filing review targets, raw JSON, source hashes and exceptions. To download selected filings and construct candidate quarter/TTM signals, use launcher option 4 or run `python -m fast_apam verify-contexts --preparation data/preparation-2026-09-25`. **These are candidates, not scores.** Dated identities, peer evidence, approved special-issuer mappings, and combined-cohort coverage still need verification and scoring integration. This folder cannot yet be passed to `run --source`. See [customer preparation](docs/customer-preparation.md).
 
 A source-only download does **not** include the developer's local database or historical financial datasets. Scoring currently requires the [prepared input contract](docs/configuration.md#prepared-snapshot-inputs).
 

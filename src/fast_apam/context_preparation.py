@@ -100,4 +100,13 @@ def verify_contexts(preparation_folder, transport=_http_bytes, progress=None):
               'inline_fact_count': sum(row['inline_fact_count'] for row in audit),
               'ready_to_score': False}
     (folder / 'inline_context_summary.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
+    from .canonical_preparation import select_facts
+    canonical = select_facts(folder)
+    result['canonical_fact_count'] = canonical['canonical_fact_count']
+    result['canonical_review_count'] = canonical['review_count']
+    from .signal_preparation import construct_signals
+    signals = construct_signals(folder)
+    result['quarter_count'] = signals['quarter_count']
+    result['ttm_yoy_observation_count'] = signals['ttm_yoy_observation_count']
+    (folder / 'inline_context_summary.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
     return result

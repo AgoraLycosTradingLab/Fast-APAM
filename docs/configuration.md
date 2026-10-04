@@ -30,7 +30,7 @@ The default store is `data/fast_apam.sqlite`, relative to the working directory.
 | `resolve-date --date D` | Preview date fallback; D can be `latest` |
 | `check-setup --date D --universe FILE` | Offline input syntax validation |
 | `prepare-data --date D --universe FILE --output DIR [--history-start D]` | Acquire SEC candidates; never publish scores |
-| `verify-contexts --preparation DIR` | Download selected filings and audit inline contexts; never publish scores |
+| `verify-contexts --preparation DIR` | Download selected filings, reconcile canonical facts, construct candidate quarters/TTM/YoY; never publish scores |
 | `import-snapshot --date D --source DIR` | Import prepared inputs without publishing results |
 | `run --date D --output DIR [--universe FILE] [--source DIR] [--verify] [--force]` | Calculate the full cohort, optionally select requested stocks, and publish three files |
 | `verify --date D` | Compare calculated tables against imported references |

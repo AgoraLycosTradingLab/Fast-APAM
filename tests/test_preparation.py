@@ -115,6 +115,7 @@ class PreparationTests(unittest.TestCase):
         self.assertEqual(len((self.output / 'filing_targets.csv').read_text().splitlines()), 1)
 
     def test_inline_contexts_are_audited_without_approving_scores(self):
+        self.facts['facts']['us-gaap']['Revenues']['units']['USD'][0]['start'] = '2026-04-01'
         self.run_prepare()
         payload = (b'<html xmlns:ix="http://www.xbrl.org/2013/inlineXBRL" '
                    b'xmlns:xbrli="http://www.xbrl.org/2003/instance"><body>'
@@ -134,6 +135,7 @@ class PreparationTests(unittest.TestCase):
             result = verify_contexts(self.output, transport=html_transport)
         self.assertEqual(result['target_count'], 1)
         self.assertEqual(result['inline_fact_count'], 1)
+        self.assertEqual(result['canonical_fact_count'], 1)
         self.assertFalse(result['ready_to_score'])
         self.assertEqual(len(calls), 1)
         self.assertIn('us-gaap:Revenues', (self.output / 'inline_facts.csv').read_text())
