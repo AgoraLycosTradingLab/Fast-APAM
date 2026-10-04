@@ -1,4 +1,5 @@
 import contextlib
+import csv
 import io
 import json
 import os
@@ -10,6 +11,7 @@ import unittest
 from unittest.mock import patch
 
 from fast_apam.preparation import prepare, TICKERS_URL, SecSession
+from fast_apam.context_preparation import verify_contexts
 from fast_apam.cli import main
 
 
@@ -65,6 +67,12 @@ class PreparationTests(unittest.TestCase):
         self.assertEqual(result['eligible_filing_count'], 1)
         self.assertFalse(result['ready_to_score'])
         self.assertEqual(len(result['sources']), 3)
+        self.assertEqual(result['filing_targets']['selected_filing_count'], 1)
+        with (self.output / 'filing_targets.csv').open(newline='', encoding='utf-8') as handle:
+            target = list(csv.DictReader(handle))[0]
+        self.assertEqual(target['accession_number'], self.acc)
+        self.assertEqual(target['index_status'], 'CANDIDATE_IDENTITY_UNVERIFIED')
+        self.assertEqual(target['history_sequence_status'], 'REVIEW_HISTORY_GAP')
         text = (self.output / 'candidate_facts.csv').read_text()
         self.assertIn('ACQUIRED_UNVALIDATED_CONTEXT', text)
         self.assertIn(self.acc, text)
@@ -83,6 +91,64 @@ class PreparationTests(unittest.TestCase):
         self.assertEqual(result['eligible_filing_count'], 1)
         self.assertEqual(result['candidate_fact_count'], 1)
         self.assertIn('EXCLUDED_LOOKAHEAD', (self.output / 'filing_index.csv').read_text())
+        self.assertNotIn(self.future_acc, (self.output / 'filing_targets.csv').read_text())
+
+    def test_latest_eligible_amendment_is_selected_as_review_target(self):
+        amended = dict(self.filing, accessionNumber=self.future_acc, form='10-Q/A',
+                       filingDate='2026-07-30', acceptanceDateTime='2026-07-30T12:00:00Z')
+        for key, value in amended.items():
+            self.submission['filings']['recent'][key].append(value)
+        result = self.run_prepare()
+        self.assertEqual(result['filing_targets']['selected_filing_count'], 1)
+        self.assertEqual(result['filing_targets']['superseded_vintages_excluded'], 1)
+        with (self.output / 'filing_targets.csv').open(newline='', encoding='utf-8') as handle:
+            target = list(csv.DictReader(handle))[0]
+        self.assertEqual(target['accession_number'], self.future_acc)
+        self.assertFalse(result['ready_to_score'])
+
+    def test_non_inline_filing_has_explicit_empty_target_audit(self):
+        self.submission['filings']['recent']['isInlineXBRL'] = [0]
+        result = self.run_prepare()
+        self.assertEqual(result['filing_targets']['selected_filing_count'], 0)
+        self.assertIn('NO_ELIGIBLE_INLINE_FILING',
+                      (self.output / 'preparation_exceptions.csv').read_text())
+        self.assertEqual(len((self.output / 'filing_targets.csv').read_text().splitlines()), 1)
+
+    def test_inline_contexts_are_audited_without_approving_scores(self):
+        self.run_prepare()
+        payload = (b'<html xmlns:ix="http://www.xbrl.org/2013/inlineXBRL" '
+                   b'xmlns:xbrli="http://www.xbrl.org/2003/instance"><body>'
+                   b'<xbrli:context id="c1"><xbrli:entity><xbrli:identifier>1</xbrli:identifier>'
+                   b'</xbrli:entity><xbrli:period><xbrli:startDate>2026-04-01</xbrli:startDate>'
+                   b'<xbrli:endDate>2026-06-30</xbrli:endDate></xbrli:period></xbrli:context>'
+                   b'<ix:nonFraction name="us-gaap:Revenues" contextRef="c1" '
+                   b'unitRef="USD">120</ix:nonFraction></body></html>')
+        calls = []
+        def html_transport(url, agent):
+            calls.append(url)
+            self.assertEqual(agent, 'PRIVATE_TEST_IDENTIFIER')
+            return payload
+        with patch('fast_apam.context_preparation.sec_user_agent',
+                   return_value='PRIVATE_TEST_IDENTIFIER'), \
+             patch('fast_apam.context_preparation.time.sleep'):
+            result = verify_contexts(self.output, transport=html_transport)
+        self.assertEqual(result['target_count'], 1)
+        self.assertEqual(result['inline_fact_count'], 1)
+        self.assertFalse(result['ready_to_score'])
+        self.assertEqual(len(calls), 1)
+        self.assertIn('us-gaap:Revenues', (self.output / 'inline_facts.csv').read_text())
+        self.assertNotIn('PRIVATE_TEST_IDENTIFIER',
+                         (self.output / 'inline_context_audit.csv').read_text())
+
+    def test_tampered_inline_target_is_rejected_before_network(self):
+        self.run_prepare()
+        target = self.output / 'filing_targets.csv'
+        text = target.read_text(encoding='utf-8').replace('www.sec.gov', 'example.com')
+        target.write_text(text, encoding='utf-8')
+        calls = []
+        with self.assertRaisesRegex(ValueError, 'does not match'):
+            verify_contexts(self.output, transport=lambda *args: calls.append(args))
+        self.assertFalse(calls)
 
     def test_older_submission_pages_are_retrieved(self):
         self.submission['filings']['recent'] = {}

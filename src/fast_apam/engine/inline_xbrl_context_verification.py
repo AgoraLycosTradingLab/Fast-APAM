@@ -1,6 +1,5 @@
 """Extract inline-XBRL facts and contexts for controlled Fast APAM review targets."""
 from __future__ import annotations
-from ..settings import MODEL_DATE, COHORT_SIZE, WAVE_COUNTS
 import argparse
 import csv
 import gzip

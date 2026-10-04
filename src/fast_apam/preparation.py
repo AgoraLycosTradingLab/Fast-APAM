@@ -20,6 +20,7 @@ from .engine.sec_filing_index import (
     _recent_filings, calculate_availability, parse_sec_timestamp,
 )
 from .engine.sec_companyfacts_acquisition import SEC_COMPANYFACTS_URL, _candidate_facts
+from .engine.historical_filing_targets import build_targets
 
 TICKERS_URL = 'https://www.sec.gov/files/company_tickers.json'
 ISSUER_FIELDS = ['ticker', 'cik', 'company_name', 'model_date', 'identity_status',
@@ -161,6 +162,9 @@ def prepare(universe_path, model_date, output, history_start=None,
     def issue(ticker, stage, reason, detail=''):
         exceptions.append(dict(ticker=ticker, stage=stage, reason=reason, detail=detail))
 
+    target_summary = {'issuer_count': 0, 'selected_filing_count': 0,
+                      'superseded_vintages_excluded': 0, 'status_counts': {}, 'form_counts': {}}
+
     def save(status):
         _write_csv(folder / 'issuer_candidates.csv', issuers, ISSUER_FIELDS)
         _write_csv(folder / 'filing_index.csv', index,
@@ -176,6 +180,7 @@ def prepare(universe_path, model_date, output, history_start=None,
             'eligible_filing_count': sum(r['eligible_on_model_date'] == 'Y' for r in index),
             'candidate_fact_count': len(candidates), 'acquisition_failures': failures,
             'exception_count': len(exceptions), 'ready_to_score': False,
+            'filing_targets': target_summary,
             'universe_sha256': setup['universe_sha256'],
             'sources': session.sources,
             'remaining_gates': ['Dated identity, membership and sector/peer evidence',
@@ -258,4 +263,20 @@ def prepare(universe_path, model_date, output, history_start=None,
             issue(ticker, 'SEC_ACQUISITION', 'ACQUISITION_FAILED', type(error).__name__)
         finally:
             save('IN_PROGRESS')
+    reviewable = {row['ticker'] for row in index if
+                  row['eligible_on_model_date'] == 'Y' and row['is_inline_xbrl'] == '1' and
+                  row['index_status'] == 'CANDIDATE_IDENTITY_UNVERIFIED'}
+    if reviewable:
+        target_summary.update(build_targets(folder / 'filing_index.csv',
+                                           folder / 'filing_targets.csv',
+                                           folder / 'filing_targets_audit.csv',
+                                           allowed_statuses=frozenset({'CANDIDATE_IDENTITY_UNVERIFIED'})))
+    else:
+        _write_csv(folder / 'filing_targets.csv', [],
+                   ['model_date', 'ticker', 'accession_number', 'history_sequence_status'])
+        _write_csv(folder / 'filing_targets_audit.csv', [],
+                   ['model_date', 'ticker', 'target_history_status', 'review_note'])
+    for issuer in issuers:
+        if issuer['ticker'] not in reviewable:
+            issue(issuer['ticker'], 'FILING_TARGETS', 'NO_ELIGIBLE_INLINE_FILING')
     return save('INCOMPLETE' if failures else 'CANDIDATES_ACQUIRED_NOT_SCORE_READY')

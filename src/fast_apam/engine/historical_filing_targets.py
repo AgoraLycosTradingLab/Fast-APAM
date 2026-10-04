@@ -1,6 +1,5 @@
 """Build the point-in-time historical filing target set for quarter construction."""
 from __future__ import annotations
-from ..settings import MODEL_DATE, COHORT_SIZE, WAVE_COUNTS
 import argparse
 import csv
 import json
@@ -13,10 +12,11 @@ MINIMUM_STANDALONE_QUARTERS = 9
 def _latest_vintage(rows: list[dict]) -> dict:
     return max(rows, key=lambda r: (r['model_available_date'], r['accepted_timestamp_utc'], r['accession_number']))
 
-def build_targets(index_path: Path, targets_path: Path, audit_path: Path):
+def build_targets(index_path: Path, targets_path: Path, audit_path: Path,
+                  allowed_statuses=frozenset({'ELIGIBLE'})):
     with index_path.open(newline='', encoding='utf-8-sig') as handle:
         rows = list(csv.DictReader(handle))
-    eligible = [row for row in rows if row['eligible_on_model_date'] == 'Y' and row['index_status'] == 'ELIGIBLE' and (row['form_type'] in {'10-Q', '10-K', '10-Q/A', '10-K/A'}) and (row['is_inline_xbrl'] == '1')]
+    eligible = [row for row in rows if row['eligible_on_model_date'] == 'Y' and row['index_status'] in allowed_statuses and (row['form_type'] in {'10-Q', '10-K', '10-Q/A', '10-K/A'}) and (row['is_inline_xbrl'] == '1') and row['model_available_date'] <= row['model_date']]
     grouped: dict[tuple[str, str], list[dict]] = defaultdict(list)
     for row in eligible:
         grouped[row['ticker'], row['report_period']].append(row)

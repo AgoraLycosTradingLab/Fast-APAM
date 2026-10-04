@@ -31,6 +31,8 @@ def main():
     prepare.add_argument('--date',required=True);prepare.add_argument('--universe',required=True)
     prepare.add_argument('--output',required=True)
     prepare.add_argument('--history-start',help='Earliest filing date; default January 1 three years before model date, minimum 2023-01-01')
+    contexts=commands.add_parser('verify-contexts',help='Download and audit inline contexts from a preparation folder; does not score')
+    contexts.add_argument('--preparation',required=True)
     resolve=commands.add_parser('resolve-date',help='Show the previous completed NYSE session for a date or latest')
     resolve.add_argument('--date',default='latest')
     args=parser.parse_args()
@@ -53,6 +55,15 @@ def main():
                            progress=lambda message: print(message,file=sys.stderr,flush=True))
             print(json.dumps(result,indent=2))
             return 1 if result['status']=='INCOMPLETE' else 0
+        except (ValueError,OSError,UnicodeError,csv.Error) as error:
+            parser.exit(1,str(error)+'\n')
+    if args.command=='verify-contexts':
+        from .context_preparation import verify_contexts
+        try:
+            result=verify_contexts(args.preparation,
+                progress=lambda message: print(message,file=sys.stderr,flush=True))
+            print(json.dumps(result,indent=2))
+            return 1 if result['failure_count'] else 0
         except (ValueError,OSError,UnicodeError,csv.Error) as error:
             parser.exit(1,str(error)+'\n')
     if args.command=='check-setup':

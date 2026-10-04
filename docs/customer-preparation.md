@@ -25,6 +25,14 @@ You may also use `--date latest`. Weekend and holiday dates, or today before its
 
 The source manifest records each URL, hash and retrieval timestamp. Current ticker matches are discovery hints even when the requested date is historical; the command never promotes them to point-in-time universe evidence. Different share-class spellings are not guessed. Nonpositive financial values remain unchanged for later governed fallback handling. Acceleration and scores are not calculated here.
 
+The acquisition folder also contains `filing_targets.csv` and `filing_targets_audit.csv`. These apply the existing latest-eligible-vintage and 12-period history-window rule to candidate inline filings. Short history is marked for review. To download those filings and extract inline XBRL facts and contexts, run:
+
+```powershell
+python -m fast_apam verify-contexts --preparation data/preparation-2026-09-25
+```
+
+This writes `inline_facts.csv`, `inline_context_audit.csv`, `inline_context_summary.json`, and hashed raw filing files. The command checks each target against the acquisition index and model-date cutoff before any download. Failed retrievals are audited without exposing the private SEC identifier. These files are still candidate evidence and are not a score-ready snapshot.
+
 Requests are sequential and throttled. Acquired evidence is preserved if one issuer fails. `INCOMPLETE` returns exit code 1. `CANDIDATES_ACQUIRED_NOT_SCORE_READY` returns 0 for acquisition only; both statuses have `ready_to_score: false`. Nonempty output folders are rejected. Retry into a new folder; automatic retry/resume remains future work. Invalid or future fact periods and unresolved symbols remain explicit exceptions even when transport succeeds.
 
 No original development data, local snapshot or scoring configuration is needed. Tests use synthetic SEC responses for older filing pages, cutoff protection, lineage, nonpositive values, malformed metadata, unresolved symbols, source restrictions and redacted failures. Live acquisition still needs internet and the customer's SEC contact identifier; offline tests do not establish live provider availability.
