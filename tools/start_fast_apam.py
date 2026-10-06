@@ -24,6 +24,8 @@ def run_operation(python, arguments):
         print('\nPreparation finished. These are financial candidates, not scored model results.', flush=True)
     elif arguments and arguments[0] == 'verify-contexts':
         print('\nInline, quarter and TTM preparation finished. These remain candidate signals, not scored model results.', flush=True)
+    elif arguments and arguments[0] == 'resolve-cohort':
+        print('\nDated ETF peer candidates and audit are ready. These are not scored model results.', flush=True)
     return result.returncode
 
 
@@ -81,9 +83,10 @@ def main():
           '2. Download SEC financial candidates (internet required)\n'
           '3. Run my stock list against a prepared scoring snapshot\n'
           '4. Verify inline contexts and construct candidate signals (internet required)\n'
-          '\nOptions 2 and 4 do not yet produce scores. Peer coverage and financial construction remain required.')
-    choice = input('Choose 1, 2, 3 or 4: ').strip()
-    if choice not in {'1', '2', '3', '4'}:
+          '5. Build dated ETF peer and sector proxy\n'
+          '\nOptions 2, 4 and 5 do not yet produce scores. Peer coverage and financial construction remain required.')
+    choice = input('Choose 1, 2, 3, 4 or 5: ').strip()
+    if choice not in {'1', '2', '3', '4', '5'}:
         print('No action selected.')
         return 1
     if choice == '4':
@@ -106,6 +109,13 @@ def main():
         arguments = ['run', '--date', day, '--universe', universe, '--output', output]
         if source:
             arguments.extend(['--source', source])
+    elif choice == '5':
+        output = input('New ETF proxy folder [data/etf-proxy-' + day + ']: ').strip().strip('"')
+        holdings = input('Existing dated IVV holdings CSV [Enter to use official latest download or local archive]: ').strip().strip('"')
+        arguments = ['resolve-cohort', '--date', day, '--universe', universe,
+                     '--output', output or 'data/etf-proxy-' + day]
+        if holdings:
+            arguments.extend(['--holdings-file', holdings])
     else:
         arguments = ['check-setup' if choice == '1' else 'prepare-data', '--date', day, '--universe', universe]
         if choice == '2':

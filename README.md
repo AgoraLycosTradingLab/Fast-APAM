@@ -19,6 +19,7 @@ Fast APAM measures recent operating strength, acceleration, and deterioration. I
 | Retrieve uncached SEC documents from a reviewed filing index | Available |
 | Check a customer ticker CSV offline | Available; format validation only |
 | Acquire SEC filing and financial candidates from tickers | Available with `prepare-data`; not scoring inputs |
+| Resolve dated ETF peer and sector candidates | Available with `resolve-cohort`; explicitly an IVV holdings proxy, not official index/GICS history or scores |
 | Select historical filings and construct candidate quarter/TTM signals | Available with `prepare-data` and `verify-contexts`; still requires reviewed issuer and peer evidence |
 | Export a customer's stock list from a validated snapshot | Available with `run --universe`; full peer cohort retained |
 | Turn arbitrary tickers into a complete scoring run | Under development |
@@ -76,6 +77,8 @@ To acquire SEC data from customer tickers first, use launcher option 2 or:
 ```
 
 Use your intended date and a new or empty output folder. The command prompts privately for your SEC organization/contact identifier. It saves issuer matches, eligible and excluded filing metadata, accession-linked financial candidates, selected filing review targets, raw JSON, source hashes and exceptions. To download selected filings and construct candidate quarter/TTM signals, use launcher option 4 or run `python -m fast_apam verify-contexts --preparation data/preparation-2026-09-25`. **These are candidates, not scores.** Dated identities, peer evidence, approved special-issuer mappings, and combined-cohort coverage still need verification and scoring integration. This folder cannot yet be passed to `run --source`. See [customer preparation](docs/customer-preparation.md).
+
+For dated peer and sector candidates, use launcher option 5 or `python -m fast_apam resolve-cohort --date latest --universe universe.csv --output data/etf-proxy-latest`. It downloads the public IVV holdings CSV for a recent run and keeps a dated, hashed local archive. Historical runs need a previously archived file or `--holdings-file` pointing to a dated IVV CSV. The resulting `etf_proxy_cohort.csv`, `etf_proxy_audit.csv`, and `etf_proxy_manifest.json` are **proxy evidence, not scored results**. See [ETF proxy rules](docs/etf-proxy.md).
 
 A source-only download does **not** include the developer's local database or historical financial datasets. Scoring currently requires the [prepared input contract](docs/configuration.md#prepared-snapshot-inputs).
 

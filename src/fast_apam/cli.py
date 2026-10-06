@@ -33,6 +33,11 @@ def main():
     prepare.add_argument('--history-start',help='Earliest filing date; default January 1 three years before model date, minimum 2023-01-01')
     contexts=commands.add_parser('verify-contexts',help='Download and audit inline contexts from a preparation folder; does not score')
     contexts.add_argument('--preparation',required=True)
+    cohort=commands.add_parser('resolve-cohort',help='Build dated IVV holdings peer/sector proxy; does not score')
+    cohort.add_argument('--date',required=True);cohort.add_argument('--universe',required=True)
+    cohort.add_argument('--output',required=True)
+    cohort.add_argument('--holdings-file',help='Previously downloaded dated IVV holdings CSV for a historical run')
+    cohort.add_argument('--cache-dir',default='data/etf-holdings')
     resolve=commands.add_parser('resolve-date',help='Show the previous completed NYSE session for a date or latest')
     resolve.add_argument('--date',default='latest')
     args=parser.parse_args()
@@ -64,6 +69,15 @@ def main():
                 progress=lambda message: print(message,file=sys.stderr,flush=True))
             print(json.dumps(result,indent=2))
             return 1 if result['failure_count'] else 0
+        except (ValueError,OSError,UnicodeError,csv.Error) as error:
+            parser.exit(1,str(error)+'\n')
+    if args.command=='resolve-cohort':
+        from .etf_proxy import build_proxy
+        try:
+            result=build_proxy(args.universe,args.date,args.output,
+                               holdings_file=args.holdings_file,cache_dir=args.cache_dir)
+            print(json.dumps(result,indent=2))
+            return 0
         except (ValueError,OSError,UnicodeError,csv.Error) as error:
             parser.exit(1,str(error)+'\n')
     if args.command=='check-setup':

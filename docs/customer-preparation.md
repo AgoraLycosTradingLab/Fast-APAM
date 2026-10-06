@@ -25,6 +25,8 @@ You may also use `--date latest`. Weekend and holiday dates, or today before its
 
 The source manifest records each URL, hash and retrieval timestamp. Current ticker matches are discovery hints even when the requested date is historical; the command never promotes them to point-in-time universe evidence. Different share-class spellings are not guessed. Nonpositive financial values remain unchanged for later governed fallback handling. Acceleration and scores are not calculated here.
 
+The GitHub edition also offers a [dated IVV holdings proxy](etf-proxy.md) for peer and sector candidates. It is explicitly labeled as ETF evidence, not the official S&P 500/GICS history referenced by the original FAPAM-004 decision. The user's later choice authorizes this portable proxy route; it does not make unreviewed candidates score-ready.
+
 The acquisition folder also contains `filing_targets.csv` and `filing_targets_audit.csv`. These apply the existing latest-eligible-vintage and 12-period history-window rule to candidate inline filings. Short history is marked for review. To download those filings and extract inline XBRL facts and contexts, run:
 
 ```powershell
