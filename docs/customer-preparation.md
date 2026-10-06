@@ -27,6 +27,8 @@ The source manifest records each URL, hash and retrieval timestamp. Current tick
 
 The GitHub edition also offers a [dated IVV holdings proxy](etf-proxy.md) for peer and sector candidates. It is explicitly labeled as ETF evidence, not the official S&P 500/GICS history referenced by the original FAPAM-004 decision. The user's later choice authorizes this portable proxy route; it does not make unreviewed candidates score-ready.
 
+Launcher option 6 or `prepare-cohort` selects a hashed sector batch from that proxy and runs this same SEC candidate acquisition for its peers. The batch's `sec_candidates/` folder follows the file contract below. This is an acquisition step, not a sector scoring decision.
+
 The acquisition folder also contains `filing_targets.csv` and `filing_targets_audit.csv`. These apply the existing latest-eligible-vintage and 12-period history-window rule to candidate inline filings. Short history is marked for review. To download those filings and extract inline XBRL facts and contexts, run:
 
 ```powershell

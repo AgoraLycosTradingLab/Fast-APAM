@@ -175,13 +175,15 @@ def build_proxy(universe_path, model_date, output, *, holdings_file=None,
                           'reason': 'NOT_IN_DATED_IVV_EQUITY_HOLDINGS_OR_ALIAS_UNRESOLVED',
                           'source_sha256': digest})
     folder.mkdir(parents=True, exist_ok=True)
-    _write(folder / 'etf_proxy_cohort.csv', cohort, COHORT_FIELDS)
+    cohort_path = folder / 'etf_proxy_cohort.csv'
+    _write(cohort_path, cohort, COHORT_FIELDS)
     _write(folder / 'etf_proxy_audit.csv', audit, AUDIT_FIELDS)
     result = {'model_date': day.isoformat(), 'date_resolution': resolution,
               'holdings_as_of_date': as_of.isoformat(), 'proxy_age_days': age,
               'source_type': source_type, 'source_path': source_path,
               'source_url': IVV_CSV_URL if source_type == 'OFFICIAL_IVV_DOWNLOAD_ARCHIVE' else '',
               'source_sha256': digest, 'cohort_size': len(cohort),
+              'cohort_sha256': hashlib.sha256(cohort_path.read_bytes()).hexdigest(),
               'requested_ticker_count': len(request['requested_tickers']),
               'requested_in_proxy_count': sum(ticker in by_ticker for ticker in request['requested_tickers']),
               'sector_counts': dict(Counter(row['sector'] for row in cohort)),

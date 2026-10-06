@@ -1,5 +1,6 @@
 """Source-checkout launcher. Uses its own folder, venv and argument lists."""
 import os
+import json
 from pathlib import Path
 import subprocess
 import sys
@@ -26,6 +27,8 @@ def run_operation(python, arguments):
         print('\nInline, quarter and TTM preparation finished. These remain candidate signals, not scored model results.', flush=True)
     elif arguments and arguments[0] == 'resolve-cohort':
         print('\nDated ETF peer candidates and audit are ready. These are not scored model results.', flush=True)
+    elif arguments and arguments[0] == 'prepare-cohort':
+        print('\nSEC financial candidates for this peer batch are ready for review. These are not scored model results.', flush=True)
     return result.returncode
 
 
@@ -84,9 +87,10 @@ def main():
           '3. Run my stock list against a prepared scoring snapshot\n'
           '4. Verify inline contexts and construct candidate signals (internet required)\n'
           '5. Build dated ETF peer and sector proxy\n'
-          '\nOptions 2, 4 and 5 do not yet produce scores. Peer coverage and financial construction remain required.')
-    choice = input('Choose 1, 2, 3, 4 or 5: ').strip()
-    if choice not in {'1', '2', '3', '4', '5'}:
+          '6. Prepare SEC financial candidates for an ETF peer batch\n'
+          '\nOptions 2, 4, 5 and 6 do not yet produce scores. Peer coverage and financial construction remain required.')
+    choice = input('Choose 1, 2, 3, 4, 5 or 6: ').strip()
+    if choice not in {'1', '2', '3', '4', '5', '6'}:
         print('No action selected.')
         return 1
     if choice == '4':
@@ -95,6 +99,26 @@ def main():
             print('A preparation folder is required.')
             return 1
         return run_operation(python, ['verify-contexts', '--preparation', folder])
+    if choice == '6':
+        proxy = input('ETF proxy folder from option 5: ').strip().strip('"')
+        try:
+            manifest = json.loads((Path(proxy) / 'etf_proxy_manifest.json').read_text(encoding='utf-8'))
+            sectors = list(manifest['sector_counts'])
+            for number, sector in enumerate(sectors, 1):
+                print(f'{number}. {sector} ({manifest["sector_counts"][sector]} peers)')
+            number = int(input('Choose sector number: ').strip())
+            sector = sectors[number - 1] if 1 <= number <= len(sectors) else None
+            if sector is None:
+                raise ValueError('Invalid sector number')
+            batch_number = int(input('Batch number [1]: ').strip() or '1')
+        except (OSError, ValueError, KeyError, IndexError, json.JSONDecodeError) as error:
+            print('Could not read the ETF proxy or sector choice: ' + type(error).__name__)
+            return 1
+        output = input('New batch folder [data/cohort-' + manifest['model_date'] + '-batch-' + str(batch_number) + ']: ').strip().strip('"')
+        arguments = ['prepare-cohort', '--proxy', proxy, '--sector', sector,
+                     '--batch-number', str(batch_number), '--output',
+                     output or 'data/cohort-' + manifest['model_date'] + '-batch-' + str(batch_number)]
+        return run_operation(python, arguments)
     day = input('Model date (YYYY-MM-DD or latest) [latest]: ').strip() or 'latest'
     universe = choose_universe()
     if not universe:

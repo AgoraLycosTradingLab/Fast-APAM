@@ -38,6 +38,14 @@ def main():
     cohort.add_argument('--output',required=True)
     cohort.add_argument('--holdings-file',help='Previously downloaded dated IVV holdings CSV for a historical run')
     cohort.add_argument('--cache-dir',default='data/etf-holdings')
+    batch=commands.add_parser('prepare-cohort',help='Acquire SEC candidates for one audited ETF sector batch; does not score')
+    batch.add_argument('--proxy',required=True,help='Folder produced by resolve-cohort')
+    batch.add_argument('--sector',required=True,help='Exact sector name from the proxy manifest')
+    batch.add_argument('--batch-number',type=int,default=1)
+    batch.add_argument('--batch-size',type=int,default=25)
+    batch.add_argument('--output',required=True)
+    batch.add_argument('--history-start')
+    batch.add_argument('--plan-only',action='store_true',help='Write the selected batch and audit without contacting SEC')
     resolve=commands.add_parser('resolve-date',help='Show the previous completed NYSE session for a date or latest')
     resolve.add_argument('--date',default='latest')
     args=parser.parse_args()
@@ -78,6 +86,17 @@ def main():
                                holdings_file=args.holdings_file,cache_dir=args.cache_dir)
             print(json.dumps(result,indent=2))
             return 0
+        except (ValueError,OSError,UnicodeError,csv.Error) as error:
+            parser.exit(1,str(error)+'\n')
+    if args.command=='prepare-cohort':
+        from .cohort_preparation import prepare_cohort_batch
+        try:
+            result=prepare_cohort_batch(args.proxy,args.output,args.sector,
+                args.batch_number,args.batch_size,history_start=args.history_start,
+                plan_only=args.plan_only,
+                progress=lambda message: print(message,file=sys.stderr,flush=True))
+            print(json.dumps(result,indent=2))
+            return 1 if result['status']=='SEC_ACQUISITION_INCOMPLETE' else 0
         except (ValueError,OSError,UnicodeError,csv.Error) as error:
             parser.exit(1,str(error)+'\n')
     if args.command=='check-setup':

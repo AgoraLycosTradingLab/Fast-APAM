@@ -10,6 +10,14 @@ python -m fast_apam resolve-cohort --date latest --universe examples/universe.cs
 
 The stock list remains a one-column CSV named `ticker`. It selects requested stocks for audit, while all unambiguous equity holdings form the peer-candidate cohort. The command writes `etf_proxy_cohort.csv`, `etf_proxy_audit.csv`, and `etf_proxy_manifest.json` in a new or empty output folder. The manifest records the effective model date, ETF holdings as-of date, age, original file path, SHA-256, sector counts, and requested-stock coverage. The downloaded source is retained under ignored `data/etf-holdings/`; it is not committed to GitHub.
 
+To prepare SEC financial candidates for one sector batch, choose option 6 in `Fast APAM.cmd` and select a sector and batch number. The equivalent command is:
+
+```powershell
+python -m fast_apam prepare-cohort --proxy data/etf-proxy-latest --sector "Information Technology" --batch-number 1 --output data/it-batch-1
+```
+
+The default batch size is 25 peers; `--batch-size` accepts 1–50. `--plan-only` creates the batch ticker file and selection audit without contacting SEC. The batch folder contains `batch_universe.csv`, `batch_selection_audit.csv`, `cohort_batch.json`, and, when executed, `sec_candidates/` with the normal SEC preparation outputs. Repeat with a new output folder and the next batch number. The batch manifest records the dated source hash, cohort hash, model date, sector and all selected tickers. A changed source or cohort file is rejected before SEC requests. The existing SEC preparation rules preserve filing availability, historical cutoff, source lineage and exception records. The SEC organization/contact identifier is entered privately or supplied through `APAM_SEC_USER_AGENT`; it is never saved to the output.
+
 For a historical date, pass a dated source you obtained from the sponsor, or use a previously archived local download:
 
 ```powershell

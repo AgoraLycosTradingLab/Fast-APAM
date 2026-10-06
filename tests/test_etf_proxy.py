@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 
 from fast_apam.etf_proxy import build_proxy, parse_holdings
+from fast_apam.cohort_preparation import prepare_cohort_batch
 
 
 def sample(as_of='Sep 17, 2026', *, duplicate=False, unknown=False):
@@ -80,6 +81,46 @@ class EtfProxyTests(unittest.TestCase):
         self.run_proxy()
         with self.assertRaisesRegex(ValueError, 'new or empty'):
             self.run_proxy()
+
+    def test_batch_selects_audited_sector_and_reuses_sec_acquisition(self):
+        self.run_proxy(sample().replace(
+            b'JPM,JPMorgan,Financials,Equity',
+            b'AAPL,Apple,Information Technology,Equity\nJPM,JPMorgan,Financials,Equity'))
+        seen = []
+        def acquire(universe, model_date, output, history_start=None, progress=None):
+            seen.append((Path(universe).read_text(), model_date, str(output)))
+            return {'status': 'CANDIDATES_ACQUIRED_NOT_SCORE_READY',
+                    'issuer_candidate_count': 1, 'candidate_fact_count': 10}
+        result = prepare_cohort_batch(self.root / 'output', self.root / 'batch',
+            'Information Technology', batch_number=2, batch_size=1, acquisition=acquire)
+        self.assertEqual(result['selected_tickers'], ['AAPL'])
+        self.assertEqual(result['status'], 'SEC_CANDIDATES_ACQUIRED_NOT_SCORE_READY')
+        self.assertEqual(seen[0][0], 'ticker\nAAPL\n')
+        self.assertEqual(seen[0][1], '2026-09-17')
+        self.assertFalse(result['ready_to_score'])
+
+    def test_batch_checksum_and_nonempty_output_protection(self):
+        self.run_proxy()
+        cohort = self.root / 'output' / 'etf_proxy_cohort.csv'
+        cohort.write_text(cohort.read_text() + 'TAMPER\n')
+        with self.assertRaisesRegex(ValueError, 'checksum mismatch'):
+            prepare_cohort_batch(self.root / 'output', self.root / 'batch',
+                                 'Information Technology', plan_only=True)
+        self.assertFalse((self.root / 'batch').exists())
+
+    def test_plan_only_and_out_of_range_batch(self):
+        self.run_proxy()
+        with self.assertRaisesRegex(ValueError, 'Batch number'):
+            prepare_cohort_batch(self.root / 'output', self.root / 'batch',
+                                 'Information Technology', batch_number=2,
+                                 batch_size=1, plan_only=True)
+        result = prepare_cohort_batch(self.root / 'output', self.root / 'batch',
+            'Financials', plan_only=True)
+        self.assertEqual(result['selected_tickers'], ['JPM'])
+        self.assertEqual(result['status'], 'BATCH_PLANNED')
+        with self.assertRaisesRegex(ValueError, 'new or empty'):
+            prepare_cohort_batch(self.root / 'output', self.root / 'batch',
+                                 'Financials', plan_only=True)
 
 
 if __name__ == '__main__':
